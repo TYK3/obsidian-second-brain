@@ -591,7 +591,7 @@ uv run python scripts/bootstrap_vault.py --path ~/my-vault --name "Your Name" --
 PostCompact -> obsidian-bg-agent.sh -> claude -p (headless) -> vault updated
 ```
 
-**What arming it costs.** The headless run uses `--dangerously-skip-permissions`, because nobody is there to approve each write. That is why the agent ships inert and stays opt-in. Its tool surface is pinned to `Read,Write,Edit,Glob,Grep`, so it cannot run shell commands or reach the network, and it only adds and updates - it never deletes or merges. If that trade is not one you want, leave it off; every other command works without it.
+**What arming it costs.** The headless run uses `--dangerously-skip-permissions`, because nobody is there to approve each write. That is why the agent ships inert and stays opt-in. Its tool surface is restricted with `--tools "Read,Write,Edit,Glob,Grep"` (the flag that removes every other built-in tool, not just pre-approves these) and no MCP servers are loaded, so it cannot run shell commands or reach the network, and it only adds and updates - it never deletes or merges. If that trade is not one you want, leave it off; every other command works without it.
 
 **Scheduled:**
 
