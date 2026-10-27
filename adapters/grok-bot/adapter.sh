@@ -17,10 +17,14 @@
 #   INSTALL.md                    - how workflows and MCP work on Grok Bot / Sand.
 #
 # Design notes:
-#   - Each skill body opens with MCP vault I/O instructions telling the agent to
-#     use obsidian_* tools rather than filesystem operations.
+#   - Each skill body opens with that skill's own title (an H1), then MCP vault
+#     I/O instructions telling the agent to use obsidian_* tools rather than
+#     filesystem operations. The title has to be the first heading: a picker
+#     that names a skill from the first body H1 would otherwise show the
+#     embedded write spec's heading (openclaw/openclaw#184724).
 #   - references/ai-first-rules.md is embedded in every command skill so the
-#     non-negotiable write spec survives even a cherry-picked install.
+#     non-negotiable write spec survives even a cherry-picked install. The
+#     spec is appended after the title and is not rewritten.
 #   - The trigger policy (proactive vs explicit) is encoded in each description.
 #   - Grok Bot has no hook runtime, so no SessionStart or PostToolUse hooks.
 #   - Python-backed research commands still need the scripts/ directory accessible;
@@ -74,6 +78,8 @@ _grok_emit_skills() {
       printf 'description: "%s"\n' "${desc//\"/\\\"}"
       echo "---"
       echo
+      # Title H1 first. See emit_skill_title in adapters/lib.sh.
+      emit_skill_title "$f" "$name"
       if [[ "$name" == "crew" ]]; then
         # Crew needs a Python runner and shared folder, not the vault MCP.
         command_body "$f" | sed 's|SKILL_ROOT|skills/obsidian-core|g'

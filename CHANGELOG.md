@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- **Skill pickers that name a skill from its first heading no longer show "AI-First Note Rules" for every command ([openclaw/openclaw#184724](https://github.com/openclaw/openclaw/issues/184724)).** The agent-skills and grok-bot builds embed `references/ai-first-rules.md`, which opens with that heading, and most command bodies have no heading of their own, so 47 command skills shared one title. Each of those skills now opens with its own title (`obsidian-save` becomes `# Obsidian Save`). `/crew` already opened with `# Crew` and is left as it is. The embedded spec stays below the title, with the same wording.
+
 - **`move_note` raised instead of returning an error when a destination parent was a file (follow-up to #343, by @tonydzi).** Moving to `wiki/Contact.md/note.md` while `wiki/Contact.md` is a note made `dst.parent.mkdir(...)` raise `FileExistsError`, and a file further up raised `NotADirectoryError`; both escaped the tool as exceptions. It now returns `could not create the destination folder: ...` and leaves the source untouched. A parametrized test in `tests/test_mcp_codex_parity.py` covers both shapes and fails on the previous `main`.
 
 ## [0.20.0] - 2026-10-25 - The Batch
