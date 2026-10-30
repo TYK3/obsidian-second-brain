@@ -73,7 +73,7 @@ Shared agent memory isn't new. What Crew adds is the three parts above.
   <a href="#install"><strong>Install &rarr;</strong></a> &middot;
   <a href="DEMOS.md">Demos</a> &middot;
   <a href="#what-happens-when-you-install-this">See it in action</a> &middot;
-  <a href="#49-commands">All commands</a> &middot;
+  <a href="#54-commands">All commands</a> &middot;
   <a href="#choose-your-preset">Presets</a> &middot;
   <a href="#the-vault-is-alive">OKM</a> &middot;
   <a href="https://github.com/eugeniughelbur/obsidian-second-brain/discussions">Discussions</a>
@@ -292,7 +292,7 @@ Free transcript via youtube-transcript-api. Optional metadata + top comments via
   +------------------------------------------+
 ```
 
-49 commands total. The calendar command (`/obsidian-calendar`) is Claude Code only (needs the Google Calendar MCP), so the Codex / Gemini / OpenCode / Hermes / Pi / Agent Skills builds ship 48.
+54 commands total. The calendar command (`/obsidian-calendar`) is Claude Code only (needs the Google Calendar MCP), so the Codex / Gemini / OpenCode / Hermes / Pi / Agent Skills builds ship 53.
 
 **Layer 1** saves, organizes, ingests, reconciles, exports, schedules your calendar, and maintains your vault.
 **Layer 2** challenges your ideas, surfaces hidden patterns, bridges unrelated domains, and graduates ideas into projects.
@@ -302,7 +302,7 @@ Free transcript via youtube-transcript-api. Optional metadata + top comments via
 
 ---
 
-## 49 Commands
+## 54 Commands
 
 ### Operations -- Claude remembers
 
@@ -323,6 +323,9 @@ Free transcript via youtube-transcript-api. Optional metadata + top comments via
 | `/obsidian-capture` | Zero-friction idea capture |
 | `/obsidian-catchup` | Process captures dumped from the Telegram bot (voice/text/image/PDF/link) into the vault |
 | `/obsidian-find` | Smart search with context |
+| `/obsidian-sync [export.zip]` | Imports every AI chat into `Conversations/` - Claude Code, Codex, Gemini CLI logs plus ChatGPT, Claude, Grok and Gemini exports dropped in `inbox/` - redacted, deduplicated, full-text indexed |
+| `/obsidian-recall [topic]` | Recalls what was said or decided with any AI, with date, platform and a link to the source chat |
+| `/obsidian-handoff [task]` | Builds a context pack to paste into ChatGPT, Gemini, Grok or Claude when switching AI |
 | `/obsidian-recap` | Summary of a day, week, or month |
 | `/obsidian-review` | Structured weekly or monthly review |
 | `/obsidian-board` | Kanban board view and updates |
@@ -350,6 +353,8 @@ Free transcript via youtube-transcript-api. Optional metadata + top comments via
 | `/obsidian-panel` | Convenes a panel of distinct perspectives on a decision, one verdict each + synthesis |
 | `/obsidian-emerge` | Surfaces patterns from 30 days of notes you never named |
 | `/obsidian-connect [A] [B]` | Bridges two unrelated domains to spark new ideas |
+| `/obsidian-chat-digest [N]` | Digests imported chats into project, decision, concept and person notes, with each claim linked to its source chat |
+| `/obsidian-think [decision]` | Ten-stage reasoning loop (observe, listen, think, connect, feel, accept, create, grow) grounded in vault evidence; adapted from claude-obsidian |
 | `/vault-deep-synthesis [topic]` | Cross-references every note on a topic: agreements, contradictions, stale claims, gaps |
 | `/obsidian-distill [note or source]` | Condenses a long note/source into key claims, each tagged with provenance back to the exact source block |
 | `/idea-discovery` | Ranks 3-5 next-direction candidates from ideas, open questions, and orphan research |
@@ -691,7 +696,7 @@ Codex users then run `/hooks` once to trust the hooks. Restart Cursor after setu
 
 <img src="media/plugin-install.gif" alt="Installing obsidian-second-brain through the Claude Code plugin marketplace: marketplace add, plugin install, status enabled." width="100%" />
 
-That ships all 49 commands, the skill manual, the session-context hook, the opt-in background agent (inert until you arm it - see [hooks/postcompact.hook.example.json](hooks/postcompact.hook.example.json)), and the vault MCP server. Then tell Claude where your vault lives by adding to the `env` section of `~/.claude/settings.json`:
+That ships all 54 commands, the skill manual, the session-context hook, the opt-in background agent (inert until you arm it - see [hooks/postcompact.hook.example.json](hooks/postcompact.hook.example.json)), and the vault MCP server. Then tell Claude where your vault lives by adding to the `env` section of `~/.claude/settings.json`:
 
 ```json
 "env": { "OBSIDIAN_VAULT_PATH": "/path/to/your/vault" }

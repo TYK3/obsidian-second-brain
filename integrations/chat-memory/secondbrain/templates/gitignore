@@ -1,0 +1,8 @@
+# rebuildable state
+.brain/
+# raw export copies can be huge and may hold unredacted data; keep them local
+.raw/
+.obsidian/workspace*.json
+.obsidian/cache
+.DS_Store
+.trash/

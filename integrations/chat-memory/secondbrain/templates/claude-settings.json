@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "deny": [
+      "Edit(Conversations/**)", "Write(Conversations/**)",
+      "Edit(.raw/**)", "Write(.raw/**)",
+      "Edit(Clippings/**)", "Write(Clippings/**)",
+      "Bash(rm:*)", "Bash(curl:*)", "Bash(wget:*)", "Bash(git push:*)"
+    ],
+    "allow": [
+      "Read", "Grep", "Glob",
+      "Edit(Projects/**)", "Write(Projects/**)", "Edit(Decisions/**)", "Write(Decisions/**)",
+      "Edit(Concepts/**)", "Write(Concepts/**)", "Edit(People/**)", "Write(People/**)",
+      "Edit(Daily/**)", "Write(Daily/**)", "Edit(_brain/**)", "Write(_brain/**)",
+      "Write(reports/**)", "Edit(reports/**)", "Edit(index.md)", "Edit(log.md)",
+      "Bash(brain:*)", "Bash(python3 -m secondbrain:*)", "mcp__second-brain", "mcp__obsidian-second-brain"
+    ]
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "userIgnoreFilters": [".raw/", ".brain/"],
+  "showFrontmatter": false,
+  "alwaysUpdateLinks": true
+}
