@@ -26,11 +26,23 @@ def skill_dir() -> Path:
     return Path(os.environ.get("OSB_SKILL_DIR") or HOME / ".claude" / "skills" / "obsidian-second-brain")
 
 
+def _has_mcp() -> bool:
+    try:
+        import mcp.server.fastmcp  # noqa: F401
+    except ImportError:
+        return False
+    return True
+
+
 def server_spec(vault: Path) -> dict:
     server = skill_dir() / "integrations" / "obsidian-mcp-server" / "server.py"
+    env = {"OBSIDIAN_VAULT_PATH": str(vault)}
+    if _has_mcp():
+        # This interpreter already has the MCP SDK (installed with `--with "mcp<2"`): start
+        # instantly, with no per-launch environment build that a sandboxed client may block.
+        return {"command": sys.executable, "args": [str(server)], "env": env}
     uv = shutil.which("uv") or "uv"  # absolute when found: GUI apps often lack the user's PATH
-    return {"command": uv, "args": ["run", "--no-project", "--with", "mcp<2", "python", str(server)],
-            "env": {"OBSIDIAN_VAULT_PATH": str(vault)}}
+    return {"command": uv, "args": ["run", "--no-project", "--with", "mcp<2", "python", str(server)], "env": env}
 
 
 def instructions(vault: Path) -> str:
@@ -148,7 +160,8 @@ class Installer:
         spec = server_spec(self.vault)
         block = (f'[mcp_servers.{SERVER}]\ncommand = {json.dumps(spec["command"])}\n'
                  f'args = {json.dumps(spec["args"])}\n'
-                 f'env = {{ OBSIDIAN_VAULT_PATH = {json.dumps(str(self.vault))} }}\n')
+                 f'env = {{ OBSIDIAN_VAULT_PATH = {json.dumps(str(self.vault))} }}\n'
+                 "startup_timeout_sec = 30\n")
         for name in (OLD_SERVER, SERVER):
             text = re.sub(r"\[mcp_servers\.(?:\"%s\"|%s)\][\s\S]*?(?=\n\[|\Z)" % (name, name), "", text)
         text = text.rstrip()

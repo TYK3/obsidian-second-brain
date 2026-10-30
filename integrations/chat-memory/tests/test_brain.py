@@ -292,6 +292,7 @@ def test_installer_dry_and_real(vault, tmp_path, monkeypatch):
     servers = json.loads((home / ".claude.json").read_text())["mcpServers"]
     assert "second-brain" not in servers and "other" in servers
     assert servers["obsidian-second-brain"]["args"][-1].endswith("server.py")
+    assert "startup_timeout_sec = 30" in (home / ".codex" / "config.toml").read_text()
     assert servers["obsidian-second-brain"]["env"] == {"OBSIDIAN_VAULT_PATH": str(vault.root)}
     settings = json.loads((home / ".claude" / "settings.json").read_text())
     assert settings["hooks"]["SessionStart"] == [mine]  # old start hook gone, the user's own kept
