@@ -490,6 +490,30 @@ Do not just return filenames - return enough context for the user to act.
 
 ---
 
+### `/obsidian-sync [export.zip | folder]`
+
+**Import every AI chat into the vault (chat memory).**
+
+Calls `obsidian_chat_sync` (or `brain sync`): Claude Code, Codex and Gemini CLI logs, extra sources registered with `brain install <target> --config-dir`, and every export in `inbox/` (ChatGPT, Claude.ai, Grok, Gemini Takeout). One note per chat under `Conversations/<platform>/<year>/`, secrets redacted, re-imports idempotent, full-text indexed. Reports counts and the digest backlog. Full flow in `commands/obsidian-sync.md`.
+
+---
+
+### `/obsidian-recall [topic]`
+
+**Recall past discussions with any AI.**
+
+`obsidian_context` for the topic, then `obsidian_chat_search` with varied phrasings, then `obsidian_chat_read` on the best hits. Answers with what was said, when, on which platform, linked to the source chat. Never reconstructs history that is not in the vault. Full flow in `commands/obsidian-recall.md`.
+
+---
+
+### `/obsidian-handoff [task]`
+
+**Context pack for switching AI.**
+
+Saves the session, builds `obsidian_context` for the task, adds a "where we are right now" section, writes `_brain/handoff.md`, and shows it as one pasteable block. Full flow in `commands/obsidian-handoff.md`.
+
+---
+
 ### `/obsidian-recap [today|week|month]`
 
 **Summarizes a time period from the vault.**
@@ -793,6 +817,22 @@ These commands use the vault as a thinking partner - not just storage. They surf
 **Multi-turn Socratic brainstorm - the only stateful thinking tool.**
 
 Every other thinking tool is a single-shot analytical pass; this one interviews the user one question per turn (multiple-choice preferred) across six categories - problem framing, constraints, trade-off forcing, scope bounding, prior-decision linking, anti-goals - until an internal 6-item convergence checklist reaches at least 5, then presents 2-3 named approaches with exactly one (Recommended), and writes a `type: brainstorm` note (conclusions and reasoning, never the transcript). Grounds its questions in the vault first: related decisions, contradictions, and open questions become interview material. Offers `/obsidian-graduate` or `/obsidian-decide` when the outcome is project- or ADR-shaped. Full flow in `commands/obsidian-brainstorm.md`.
+
+---
+
+### `/obsidian-chat-digest [N]`
+
+**Turn imported chats into knowledge.**
+
+Works through `obsidian_chat_digest_queue` (default 10, max 15 page edits): reads each chat, records a summary with `obsidian_set_chat_summary`, and rewrites the affected project, decision, concept and person notes to the current truth with `[[source chat]]` provenance and confidence levels. Conflicts get a `[!conflict]` callout for `/obsidian-reconcile`. The night shift runs it nightly. Full flow in `commands/obsidian-chat-digest.md`.
+
+---
+
+### `/obsidian-think [decision]`
+
+**Ten-stage reasoning loop, read-only.**
+
+Adapted from claude-obsidian's `think` skill (MIT). Builds an evidence frame from the vault and past chats (observed, inferred, unknown, preference), then loops observe, listen, think, connect, feel, accept, create, grow, and ends with decision, evidence, counterargument, verification and growth sections. Offers `/obsidian-decide` to keep the result. Full flow in `commands/obsidian-think.md`.
 
 ---
 

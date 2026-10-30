@@ -1,0 +1,22 @@
+# Run from the repo root:
+#   fly launch --no-deploy --config deploy/fly.toml --dockerfile deploy/Dockerfile
+#   fly volumes create brain_data --size 1 --config deploy/fly.toml
+#   fly secrets set --config deploy/fly.toml VAULT_REPO=TYK3/second-brain-vault GITHUB_TOKEN=<fine-grained PAT> \
+#       SECOND_BRAIN_TOKEN=$(python3 -c "import secrets;print(secrets.token_urlsafe(32))")
+#   fly deploy --config deploy/fly.toml --dockerfile deploy/Dockerfile
+app = "second-brain-tyk3"
+
+[http_service]
+  internal_port = 8765
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+[mounts]
+  source = "brain_data"
+  destination = "/data"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
