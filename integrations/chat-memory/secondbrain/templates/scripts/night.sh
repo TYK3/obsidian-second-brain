@@ -25,4 +25,5 @@ if command -v claude >/dev/null; then
     --model haiku --permission-mode acceptEdits --allowedTools "Read,Grep,Glob,Write" || true
 fi
 
+$BRAIN decay > /dev/null  # memory tiers: core/active/warm/cold/archive (free)
 $BRAIN sync --quiet  # reindex + commit (+ push if auto_push is on)

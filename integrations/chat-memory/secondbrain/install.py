@@ -38,7 +38,7 @@ def server_spec(vault: Path) -> dict:
     server = skill_dir() / "integrations" / "obsidian-mcp-server" / "server.py"
     env = {"OBSIDIAN_VAULT_PATH": str(vault)}
     if _has_mcp():
-        # This interpreter already has the MCP SDK (installed with `--with "mcp<2"`): start
+        # This interpreter already has the MCP SDK (the brain tool installed with the MCP pin): start
         # instantly, with no per-launch environment build that a sandboxed client may block.
         return {"command": sys.executable, "args": [str(server)], "env": env}
     uv = shutil.which("uv") or "uv"  # absolute when found: GUI apps often lack the user's PATH

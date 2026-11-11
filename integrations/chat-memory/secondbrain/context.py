@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import re
+from pathlib import Path
 
+from .decay import active_knowledge
 from .search import Index
 from .vault import Vault, now, parse_frontmatter
 
@@ -47,6 +49,19 @@ def build_context(vault: Vault, query: str | None = None, budget_tokens: int = 4
     facts = _section(vault, "_brain/CRITICAL_FACTS.md")
     if facts:
         parts += ["## About me", facts]
+    prefs = _section(vault, "_brain/preferences.md")
+    if prefs:
+        parts += ["## Learned preferences (follow these)", prefs]
+    loops = _section(vault, "_brain/open-loops.md")
+    if loops:
+        parts += ["## Open loops", loops]
+    active, resurfaced = active_knowledge(vault)
+    if active:
+        parts += ["## Active memory (core and active notes, freshest first)",
+                  "\n".join(f"- [{x['tier']}] [[{Path(x['path']).stem}]] ({x['kind']}, {x['last']})" for x in active)]
+    if resurfaced:
+        parts += ["## Resurfaced from the archive (may be stale; a prompt for new connections)",
+                  f"- [[{Path(resurfaced['path']).stem}]] ({resurfaced['kind']}, last touched {resurfaced['last']})"]
     hot = _section(vault, "_brain/hot.md")
     if hot:
         hot = hot.replace("<!-- brain:auto:start -->", "").replace("<!-- brain:auto:end -->", "")

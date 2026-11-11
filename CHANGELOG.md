@@ -1,3 +1,11 @@
+### Added (TYK3 fork, vault infrastructure)
+
+- Memory tiers (`integrations/chat-memory/secondbrain/decay.py`, `brain decay`, night shift): notes fade from active to warm, cold and archive unless read or updated; each read slows the fade (Ebbinghaus-style strength `half_life * (1 + ln(1 + reads))`, after agent-second-brain's autograph and ai-memory's access aging). Deterministic, no model calls, no note rewrites: reads are counted in `.brain/access.json`, tiers go to `_brain/memory-tiers.md` and `.brain/tiers.json`. Pin with `tier: core`. One archived note is resurfaced per day for creative recall.
+- `obsidian_context` now loads learned preferences (`_brain/preferences.md`), open loops (`_brain/open-loops.md`), active memory and the resurfaced note.
+- `/obsidian-recall` answers in prose with a "what the brain does not know" gap analysis (staleness, fading tier, uncited claims, contradictions, holes, related open loops), after gbrain's synthesis layer, and can file the answer as a `type: qa` note.
+- `/obsidian-chat-digest` captures open loops (after gbrain) and preference signals that learn and retire (after open-second-brain).
+- `/obsidian-loops`: review open loops and learned preferences.
+
 # Changelog
 
 All notable changes to this project are documented in this file.

@@ -12,8 +12,16 @@ The argument is the topic or question. This searches past conversations, which `
 2. Call `obsidian_context` with the topic as `query`. It returns critical facts, recent activity across platforms, and the best-matching past chats.
 3. If that is not enough, call `obsidian_chat_search` with 2 or 3 different phrasings (product names, file names, error messages and people work best). Filter with `platform` when the user names one ("what did Codex suggest").
 4. Open the 1 to 3 most relevant hits with `obsidian_chat_read`. Read the `## Summary` first; page through the transcript with `offset` only when the summary does not answer the question.
-5. Answer with what was said, when (date), and on which platform, and link each source as `[[<conversation file name>]]`. If chats contradict each other, say so and give the newest view, dated.
-6. If nothing is found after the varied searches, say so plainly. Do not reconstruct history.
+5. Answer the question in prose, not as a list of hits: what was said or decided, when (date), and on which platform, with each claim linked to its source as `[[<conversation file name>]]` or `[[<note>]]`. If chats contradict each other, say so and give the newest view, dated.
+6. End with a `What the brain does not know` section (the gap analysis, after gbrain's synthesis layer). Check and report, briefly:
+   - **Staleness:** the newest source date, and how long ago that was. If it is more than 30 days old, say the answer may be out of date and name the channel the brain does not see (email, messages, meetings) that could have moved it on.
+   - **Tier:** if `_brain/memory-tiers.md` lists the main source as `cold` or `archive`, flag it as fading and possibly stale.
+   - **Uncited claims:** anything in a knowledge note you used that has no source link.
+   - **Contradictions:** sources that disagree, or a `[!conflict]` callout, with a pointer to `/obsidian-reconcile`.
+   - **Holes:** what the question needs that no source covers. Suggest the one question to ask the owner or the one export to import (`/obsidian-sync`) that would fill it.
+   - **Open loops:** any item in `_brain/open-loops.md` about this topic.
+7. If nothing is found after the varied searches, say so plainly. Do not reconstruct history.
+8. If the answer is worth keeping (a status summary, a decision trail, meeting prep), offer to file it with `obsidian_save_note` as a `type: qa` note under `Research/QA/`, sources linked, so the next recall starts from it.
 
 No MCP tools bound? Use the CLI: `brain context "<topic>"`, `brain search "<query>"`, `brain show <id>`.
 

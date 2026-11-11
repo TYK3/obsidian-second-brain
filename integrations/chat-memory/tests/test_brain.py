@@ -409,3 +409,63 @@ def test_http_read_only(vault):
         assert r["result"]["isError"] and not (vault.root / "Concepts" / "x.md").exists()
     finally:
         srv.shutdown()
+
+
+# ------------------------------------------------------------------ memory tiers (decay)
+def test_decay_tiers_reads_and_pinning(vault):
+    from datetime import datetime, timedelta, timezone
+
+    from secondbrain import decay
+    at = datetime(2026, 11, 11, tzinfo=timezone.utc)
+    def note(folder, title, days_ago, extra=""):
+        d = (at - timedelta(days=days_ago)).strftime("%Y-%m-%d")
+        write(vault.root / folder / f"{title}.md",
+              f"---\ntype: \"{decay.FOLDER_KIND[folder]}\"\ntitle: \"{title}\"\nupdated: \"{d}\"\n{extra}---\n\nbody\n")
+    note("Projects", "Fresh", 3)                     # 60-day project, 3 days old -> active
+    note("Projects", "Stale", 200)                   # -> archive
+    note("Projects", "Read often", 100)              # cold if unread; 20 reads keep it active
+    note("People", "Pinned person", 400, "tier: core\n")
+    for _ in range(20):
+        decay.record_access(vault, "Projects/Read often.md", when=at - timedelta(days=100))
+    rows = {r["title"]: r for r in decay.compute(vault, at)}
+    assert rows["Fresh"]["tier"] == "active"
+    assert rows["Stale"]["tier"] == "archive"
+    assert rows["Read often"]["reads"] == 20 and rows["Read often"]["tier"] == "active"
+    assert decay.tier_for(decay.retention(100, decay.strength("project", 0))) == "cold"  # same note unread
+    assert rows["Pinned person"]["tier"] == "core"
+    # math boundaries
+    assert decay.tier_for(0.6) == "active" and decay.tier_for(0.59) == "warm" and decay.tier_for(0.09) == "archive"
+    # run(): report + json + a resurfaced archived knowledge note, stable for the day
+    r = decay.run(vault, at)
+    assert r["counts"]["archive"] >= 1 and r["resurface"] == "Projects/Stale.md"
+    report = (vault.root / decay.REPORT).read_text(encoding="utf-8")
+    assert "## For future agent" in report and "ai-first: true" in report and "[[Fresh]]" in report
+    assert decay.run(vault, at)["resurface"] == r["resurface"]
+
+
+def test_decay_feeds_context_and_reads_are_counted(vault):
+    from secondbrain import decay
+    from secondbrain.context import build_context
+    ops.save_note(vault, "Projects", "Lantern", "## For future agent\nGemma 4 hospital-letter app.")
+    (vault.root / "_brain" / "preferences.md").write_text(
+        "---\ntype: meta\n---\n\n## Active\n- [high] UK English in documents (seen 3x, last 2026-11-01)\n", encoding="utf-8")
+    (vault.root / "_brain" / "open-loops.md").write_text(
+        "---\ntype: meta\n---\n\n## I owe\n- Send pricing to Alice (since 2026-11-02)\n", encoding="utf-8")
+    ops.read(vault, "Projects/Lantern.md")
+    ops.read(vault, "Projects/Lantern.md", offset=10)  # paging does not count as another read
+    assert decay._load(vault)["Projects/Lantern.md"]["count"] == 1
+    decay.run(vault)
+    ctx = build_context(vault, budget_tokens=6000)
+    assert "UK English" in ctx and "Send pricing to Alice" in ctx
+    assert "## Active memory" in ctx and "[[Lantern]]" in ctx
+
+
+def test_decay_cli_and_bad_access_file(vault, capsys):
+    from secondbrain import decay
+    from secondbrain.cli import main
+    (vault.root / ".brain").mkdir(exist_ok=True)
+    (vault.root / decay.ACCESS_FILE).write_text("not json", encoding="utf-8")
+    decay.record_access(vault, "x.md")  # recovers from a corrupt file instead of raising
+    assert decay._load(vault)["x.md"]["count"] == 1
+    main(["--vault", str(vault.root), "decay", "--json"])
+    assert '"counts"' in capsys.readouterr().out

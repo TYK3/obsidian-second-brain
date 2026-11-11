@@ -284,6 +284,21 @@ sources: [...]                # the conflicting notes, as wikilinks
 ai-first: true
 ```
 
+### `type: qa` (filed answers)
+A notable answer filed by `/obsidian-recall` under `Research/QA/` so the next recall starts from it instead of re-searching. It is a synthesis, so every claim links its source note or conversation, and the gap analysis travels with it:
+```yaml
+date: YYYY-MM-DD
+type: qa
+tags: [qa, <topic>]
+question: ""                  # the question as asked
+sources: []                   # [[note]] / [[conversation file name]] links the answer cites
+newest_source: YYYY-MM-DD     # staleness anchor: date of the newest cited source
+gaps: []                      # what the brain did not know when this was filed
+confidence: medium            # stated | high | medium | speculation
+ai-first: true
+```
+Body: `## For future agent` preamble, `## Answer` (prose with inline source links), `## What the brain does not know`. Re-answer rather than trust it once `newest_source` is more than 30 days old.
+
 ### `type: source` (raw captures)
 Immutable verbatim captures under `raw/`, written by `/obsidian-ingest`. The body is verbatim by design, so the `## For future agent` preamble is NOT required - this is the raw-source exception, and the validate hook skips `raw/` accordingly:
 ```yaml

@@ -164,6 +164,16 @@ def cmd_lint(a):
         print(report["markdown"])
 
 
+def cmd_decay(a):
+    from .decay import run
+    r = run(_vault(a))
+    if a.json:
+        print(json.dumps(r, indent=1))
+        return
+    print("Memory tiers: " + " | ".join(f"{k} {v}" for k, v in r["counts"].items()))
+    print(f"Report: {r['report']}" + (f"   Resurfaced today: {r['resurface']}" if r["resurface"] else ""))
+
+
 def cmd_stats(a):
     v = _vault(a)
     idx = Index(v)
@@ -347,6 +357,9 @@ def main(argv=None):
     s.set_defaults(fn=cmd_lint)
 
     sub.add_parser("stats", help="counts").set_defaults(fn=cmd_stats)
+    s = sub.add_parser("decay", help="recompute memory tiers (core/active/warm/cold/archive); no model calls")
+    s.add_argument("--json", action="store_true")
+    s.set_defaults(fn=cmd_decay)
     sub.add_parser("reindex", help="rebuild the search index from scratch").set_defaults(fn=cmd_reindex)
     sub.add_parser("mcp", help="run the MCP server on stdio").set_defaults(fn=cmd_mcp)
 

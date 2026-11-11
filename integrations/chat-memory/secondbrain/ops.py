@@ -170,6 +170,9 @@ def resolve(vault: Vault, ref: str) -> Path:
 def read(vault: Vault, ref: str, max_chars: int = 30000, offset: int = 0) -> str:
     p = resolve(vault, ref)
     text = p.read_text(encoding="utf-8")
+    if offset == 0:  # one read per note, not per page of a long transcript
+        from .decay import record_access
+        record_access(vault, p.relative_to(vault.root).as_posix())
     chunk = text[offset:offset + max_chars]
     if offset + max_chars < len(text):
         chunk += f"\n\n[... {len(text) - offset - max_chars} more chars; call again with offset={offset + max_chars}]"
