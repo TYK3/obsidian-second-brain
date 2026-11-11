@@ -46,5 +46,6 @@ if ($claude -and -not $NoAI) {
     Say "claude CLI not found; skipped distilling"
 }
 
+& $brain decay *>> $log         # memory tiers: core/active/warm/cold/archive (free)
 & $brain sync --quiet *>> $log  # reindex + commit (+ push if auto_push is on)
 Say "night shift done"

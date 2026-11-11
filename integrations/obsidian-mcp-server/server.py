@@ -69,7 +69,15 @@ def obsidian_read_note(path: str, offset: int = 0, limit: int = 20_000) -> str:
     If `truncated` is true, call again with the returned `next_offset` until it
     is null. This avoids silently losing the newest part of large dossiers.
     """
-    return json.dumps(vault_ops.read_note(path, offset=offset, limit=limit))
+    result = vault_ops.read_note(path, offset=offset, limit=limit)
+    if offset == 0:
+        try:  # a read keeps the note in active memory (integrations/chat-memory decay)
+            from secondbrain.decay import record_access
+
+            record_access(_chat_vault(), str(path))
+        except Exception:
+            pass
+    return json.dumps(result)
 
 
 @mcp.tool()

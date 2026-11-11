@@ -506,6 +506,14 @@ Calls `obsidian_chat_sync` (or `brain sync`): Claude Code, Codex and Gemini CLI 
 
 ---
 
+### `/obsidian-loops [person | prefs]`
+
+**Open loops and learned preferences.**
+
+Reads `_brain/open-loops.md` (adapted from gbrain's open-loop engine): checks each open commitment against newer chats and notes, closes what is done, lists the rest by person with age and due date, and offers chase, reschedule or drop for overdue items, changing nothing without the owner's answer. With `prefs`, reviews `_brain/preferences.md` (adapted from open-second-brain): flags preferences unseen for 90 days for retirement and contradictions for a decision. Both files are filled by `/obsidian-chat-digest` and loaded into every `obsidian_context` pack. Full flow in `commands/obsidian-loops.md`.
+
+---
+
 ### `/obsidian-handoff [task]`
 
 **Context pack for switching AI.**
